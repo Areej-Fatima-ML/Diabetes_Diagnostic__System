@@ -10,8 +10,7 @@ st.set_page_config(page_title="Diabetes AI Diagnostic ",layout="wide")
 @st.cache_resource
 def load_models():
     # Base path
-    base_path=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    model_dir=os.path.join(base_path,'models')
+    model_dir=os.path.dirname(os.path.abspath(__file__))
     # Loading models
     bin_mod=joblib.load(os.path.join(model_dir,'binary_model.joblib'))
     multi_mod=joblib.load(os.path.join(model_dir,'multiclass_model.joblib'))
@@ -134,4 +133,5 @@ if submit:
 			st.metric("Score",f"{risk_score:.1f}%")
 			st.progress(risk_score/100)
 	except Exception as e:
+
 		st.error(f"Prediction Error:{e}")
