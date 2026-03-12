@@ -1,0 +1,15 @@
+# Diabetes Diagnostic & Risk Portal
+
+This project in an AI-Powered diagnostic tool.It uses Machine Learning to provide three types of analysis:
+
+1.** Binary Classification :** Predicts if a patient is Diabetic or not.
+2.** Multiclass Classification:** Predicts the stage /grade of diabetes.
+3.** Regression:** Predicts the overall Diabetes Risk Score.
+
+## Tech Stack:
+-Python ,Scikit-Learn,Streamlit,Joblib.
+
+## How to run:
+
+1.Install requirements : 'pip install -r requirements.txt'
+2.Run the app:'streamlit run app.py'
