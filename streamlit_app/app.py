@@ -13,7 +13,7 @@ def load_models():
     # Base path
 	main_dir=os.path.dirname(current_dir)
     # Loading models
-	bin_mod=joblib.load(os.path.join(main_dir,'binary_model.joblib'))
+ 	bin_mod=joblib.load(os.path.join(main_dir,'binary_model.joblib'))
     multi_mod=joblib.load(os.path.join(main_dir,'multiclass_model.joblib'))
     reg_mod=joblib.load(os.path.join(main_dir,'regression_model.joblib'))
     scl=joblib.load(os.path.join(main_dir,'scaler.joblib'))
