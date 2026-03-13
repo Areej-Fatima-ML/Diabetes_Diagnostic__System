@@ -3,17 +3,19 @@ import pandas as pd
 import joblib 
 import os
 
-# 1 ----Page Configuration----
+# 1. ----Page Configuration----
 st.set_page_config(page_title="Diabetes AI Diagnostic", layout="wide")
 
-# 2 ----Model & Assets Loading--
+# 2. ----Model & Assets Loading----
 @st.cache_resource
 def load_models():
-    # Base path setup
+    # Get the directory where app.py is located (streamlit_app folder)
     current_dir = os.path.dirname(os.path.abspath(__file__))
+    
+    # Go one level up to the main folder (diabetes_indicator) where models are stored
     main_dir = os.path.dirname(current_dir)
     
-    # Loading models from main directory (as per your requirement)
+    # Loading model files using path joining
     bin_mod = joblib.load(os.path.join(main_dir, 'binary_model.joblib'))
     multi_mod = joblib.load(os.path.join(main_dir, 'multiclass_model.joblib'))
     reg_mod = joblib.load(os.path.join(main_dir, 'regression_model.joblib'))
@@ -22,10 +24,10 @@ def load_models():
     
     return bin_mod, multi_mod, reg_mod, scl, feats
 
-# Assigning variables
+# Initialize models and assets
 binary_model, multiclass_model, regression_model, scaler, feature_names = load_models()
 
-# 3--User Interface (UI)---
+# 3. ----User Interface (UI)----
 st.title("Clinical Diabetes Diagnostic Portal")
 st.write("Enter Patient clinical data for three models for analysis.")
 
@@ -65,7 +67,7 @@ with st.form("main_form"):
     with h3:
         edu = st.selectbox("Education Level", [1, 2, 3, 4, 5])
         income = st.selectbox("Income Level", [1, 2, 3, 4, 5, 6, 7, 8])
-        employment = st.selectbox("Employment Statuts", ["Employed", "Retired", "Student", "Unemployed"])
+        employment = st.selectbox("Employment Status", ["Employed", "Retired", "Student", "Unemployed"])
 
     st.divider()
     e1, e2, e3 = st.columns(3)
@@ -81,13 +83,13 @@ with st.form("main_form"):
 
     submit = st.form_submit_button("Run Analysis", use_container_width=True)
 
-# 4.---Logic and Prediction---
+# 4. ----Logic and Prediction----
 if submit:
     try:
-        # Starting all features with zero
+        # Initialize input dictionary with zeros based on feature names
         input_dict = {f: 0 for f in feature_names}
 
-        # Numeric Mapping
+        # Mapping numerical inputs
         input_dict.update({
             'age': age, 'bmi': bmi, 'hba1c': hba1c, 'insulin_level': insulin,
             'glucose_fasting': glucose_f, 'systolic_bp': systolic, 'diastolic_bp': diastolic,
@@ -98,47 +100,17 @@ if submit:
             'hdl_cholesterol': hdl, 'ldl_cholesterol': ldl, 'glucose_postprandial': glucose_p
         })
 
-        # Binary Mapping (History)
+        # Mapping binary categorical inputs
         input_dict['family_history_diabetes'] = 1 if fam_hist == "Yes" else 0
         input_dict['hypertension_history'] = 1 if hyp_hist == "Yes" else 0
         input_dict['cardiovascular_history'] = 1 if cardio_hist == "Yes" else 0
 
-        # One hot Mapping
+        # One-hot encoding for multi-category inputs
         for val, prefix in [(gender, 'gender'), (ethnicity, 'ethnicity'),
                           (employment, 'employment_status'), (smoking, 'smoking_status')]:
             col = f"{prefix}_{val}"
             if col in input_dict:
                 input_dict[col] = 1
 
-        # Model Processing 
-        data_frame = pd.DataFrame([input_dict])[feature_names]
-        scaled_data = scaler.transform(data_frame)
-
-        # Predictions 
-        is_diabetic = binary_model.predict(scaled_data)[0]
-        stage = multiclass_model.predict(scaled_data)[0]
-        risk_val = regression_model.predict(scaled_data)[0]
-        risk_score = max(0, min(100, risk_val))
-
-        #---Display Result---
-        st.divider()
-        res_c1, res_c2, res_c3 = st.columns(3)
-
-        with res_c1:
-            st.write("**Diagnosis**")
-            if is_diabetic == 1:
-                st.error("Detected")
-            else:
-                st.success("Not Detected")
-
-        with res_c2:
-            st.write("**Diabetes Stages**")
-            st.info(f"Predicted: {stage}")
-
-        with res_c3:
-            st.write("**Risk Probability**")
-            st.metric("Score", f"{risk_score:.1f}%")
-            st.progress(risk_score / 100)
-
-    except Exception as e:
-        st.error(f"Prediction Error: {e}")
+        # Prepare DataFrame and Scale Data
+        data_frame = pd.DataFrame([input
