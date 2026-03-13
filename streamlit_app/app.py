@@ -9,14 +9,15 @@ st.set_page_config(page_title="Diabetes AI Diagnostic ",layout="wide")
 #2  ----.Model & Asssets Loading--
 @st.cache_resource
 def load_models():
+	current_dir=os.path.dirname(os.path.abspath(__file__))
     # Base path
-    model_dir=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    main_dir=os.path.dirname(current_dir)
     # Loading models
-    bin_mod=joblib.load(os.path.join(model_dir,'binary_model.joblib'))
-    multi_mod=joblib.load(os.path.join(model_dir,'multiclass_model.joblib'))
-    reg_mod=joblib.load(os.path.join(model_dir,'regression_model.joblib'))
-    scl=joblib.load(os.path.join(model_dir,'scaler.joblib'))
-    feats=joblib.load(os.path.join(model_dir,'feature_names.joblib'))
+    bin_mod=joblib.load(os.path.join(main_dir,'binary_model.joblib'))
+    multi_mod=joblib.load(os.path.join(main_dir,'multiclass_model.joblib'))
+    reg_mod=joblib.load(os.path.join(main_dir,'regression_model.joblib'))
+    scl=joblib.load(os.path.join(main_dir,'scaler.joblib'))
+    feats=joblib.load(os.path.join(main_dir,'feature_names.joblib'))
     return bin_mod,multi_mod,reg_mod,scl,feats
 #   Assigning variables
 binary_model,multiclass_model,regression_model,scaler,feature_names=load_models()
