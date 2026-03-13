@@ -11,7 +11,7 @@ st.set_page_config(page_title="Diabetes AI Diagnostic ",layout="wide")
 def load_models():
 	current_dir=os.path.dirname(os.path.abspath(__file__))
     # Base path
-    main_dir=os.path.dirname(current_dir)
+	main_dir=os.path.dirname(current_dir)
     # Loading models
     bin_mod=joblib.load(os.path.join(main_dir,'binary_model.joblib'))
     multi_mod=joblib.load(os.path.join(main_dir,'multiclass_model.joblib'))
